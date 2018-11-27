@@ -29,6 +29,9 @@ from .util import assert_settings
 from .chainer_extensions import Evaluator
 from .chainer_extensions import set_log_scale
 from .chainer_extensions import scatter_plot
+from pyplelogger.pyplelogger import Logger
+log = Logger(__name__).build()
+
 
 def main():
     args = argparser.parse()
@@ -43,7 +46,9 @@ def main():
         assert_settings(stg)
         mkdir(stg.file.out_dir)
 
-        if stg.args.mode == 'training':
+        log.info("Started training...")
+        
+        if stg.args.mode == 'train':
             try:
                 generator = DataGenerator(stg.dataset.xyz_file, 'xyz')
                 dataset, elements = generator.holdout(ratio=stg.dataset.ratio)
@@ -53,7 +58,7 @@ def main():
                     dump_lammps(stg.file.out_dir/'lammps.nnp', generator.preproc, masters)
                     dump_training_result(stg.file.out_dir/'result.yaml', result)
             finally:
-                shutil.copy('settings.py', stg.file.out_dir/'settings.py')
+                shutil.copy('configs.py', stg.file.out_dir/'configs.py')
 
         elif stg.args.mode == 'param_search':
             try:

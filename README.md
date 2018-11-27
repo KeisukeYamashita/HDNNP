@@ -7,6 +7,22 @@
 
 > This is a implementation of High Dimensional Neural Network Potential(HDNNP) designed to reproduce Density Function Theory(DFT) calculation *effectively* with high *flexibility*, *reactivity*. Based on ogura-edu/HDNNP.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Install](#install)
+- [Setup](#setup)
+  - [By Pipenv(Prefered)](#by-pipenvprefered)
+  - [By Anaconda](#by-anaconda)
+- [Usage](#usage)
+  - [vasp2xyz: Convert VASP OUTCAR to xyz file](#vasp2xyz-convert-vasp-outcar-to-xyz-file)
+  - [merge-xyz: Merge multi xyz files into one](#merge-xyz-merge-multi-xyz-files-into-one)
+- [Maintainer](#maintainer)
+- [Reference](#reference)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Install
 
 Install this project by `git`.
@@ -114,6 +130,21 @@ There is no
 on the Anaconda Cloud, so you still have to install these packages by `pip`.
 
 And these is a bug that if you install anaconda by `pyenv`, `pipenv` will fail to start(ref: [pythonfinder + pyenv + anaconda issue](https://github.com/pypa/pipenv/issues/3044)).
+
+## Usage
+### vasp2xyz: Convert VASP OUTCAR to xyz file
+
+Use `vasp2xyz` command to convert OUTCAR to xyz file.
+
+```shell
+hdnnpy vasp2xyz [PREFIX] [PATH_TO_OUTCAR] [OUTPUT_FILE]
+```
+
+### merge-xyz: Merge multi xyz files into one
+
+```shell
+hdnnpy merge-xyz [STEPS] [PATH_TO_XYZ_FILES_DIR] [OUTPUT_FILE]
+```
 
 ## Maintainer
 

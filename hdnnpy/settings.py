@@ -40,7 +40,7 @@ class defaults:
         pass
 
 def import_user_settings(args):
-    if args.mode == 'training' and args.resume:
+    if args.mode == 'train' and args.resume:
         search_path = str(args.resume.parent.absolute())
     elif args.mode in ['prediction', 'phonon']:
         search_path = str(args.masters.parent.absolute())

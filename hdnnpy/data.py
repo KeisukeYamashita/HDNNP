@@ -439,7 +439,7 @@ class DataGenerator(object):
             self._preproc = PREPROC[stg.dataset.preproc](stg.dataset.nfeature)
         else:
             self._preproc = PREPROC[None]()
-        if stg.args.mode == 'training' and stg.args.resume:
+        if stg.args.mode == 'train' and stg.args.resume:
             self._preproc.load(stg.file.out_dir/'preproc.npz')
 
         self._datasets = []
