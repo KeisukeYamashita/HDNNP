@@ -4,33 +4,106 @@ import argparse
 from pathlib import Path
 
 
-def get_parser():
+def parse():
     parser = argparse.ArgumentParser(description='High Dimensional Neural Network Potential',
                                      fromfile_prefix_chars='@')
+    parser.add_argument(
+        '--debug', 
+        '-d',
+        action='store_true',
+        default=False,
+        help='enables verbose progress and debug output'
+        )
+
+     # TODO: Fix help messages to acutual "help message"
     subparsers = parser.add_subparsers(dest='mode')
 
-    training_parser = subparsers.add_parser('training', help='see `training -h`')
-    ps_parser = subparsers.add_parser('param_search', help='see `param_search -h`')
-    sf_parser = subparsers.add_parser('sym_func', help='see `sym_func -h`')
-    prediction_parser = subparsers.add_parser('prediction', help='see `prediction -h`')
+    vasp2xyz_parser = subparsers.add_parser('vasp2xyz', help='converts vasp OUTCAR into a xyz file extention')
+    merge_xyz_parser = subparsers.add_parser('merge-xyz', help='merges multi xyz format files')
+    training_parser = subparsers.add_parser('training', help='train the network')
+    prediction_parser = subparsers.add_parser('prediction', help='make prediction from trained network')
+    ps_parser = subparsers.add_parser('param-search', help='see `param-search -h`')
+    sf_parser = subparsers.add_parser('sym-func', help='see `sym-func -h`')
     phonon_parser = subparsers.add_parser('phonon', help='see `phonon -h`')
 
-    parser.add_argument('--debug', '-d', action='store_true', default=False,
-                        help='if this flag is set, MPI subprocesses also print their stdout')
-
-    # training mode
-    training_parser.add_argument('--verbose', '-v', action='store_true', default=False,
-                                 help='this flag may increase processing time.')
-    training_parser.add_argument('--resume', '-r', type=Path,
-                                 help='resume training from given config directory.\n'
-                                      'the given directory must contain '
-                                      '`trainer_snapshot.npz`, `interim_result.pickle`.')
-
-    # test mode
-    for p in [prediction_parser, phonon_parser]:
-        p.add_argument('--poscar', '-p', required=True, type=Path,
-                       help='POSCAR file used for postprocess calculation.')
-        p.add_argument('--masters', '-m', required=True, type=Path,
-                       help='trained masters model used for postprocess calculation.')
+    set_up_vasp2xyz_parser(vasp2xyz_parser)
+    set_up_merge_xyz_parser(merge_xyz_parser)
+    set_up_traning_parser(training_parser)
+    set_up_prediction_and_phonon_parser(prediction_parser, phonon_parser)
 
     return parser.parse_args()
+
+def set_up_vasp2xyz_parser(vasp2xyz_parser):
+    """Setups vasp2xyz parser"""
+
+    vasp2xyz_parser.add_argument(
+        'prefix',
+        help='prefix uses to distinguish files'
+    )
+
+    vasp2xyz_parser.add_argument(
+        'outcar',
+        help='path to vasp output file OUTCAR'
+    )
+
+    vasp2xyz_parser.add_argument(
+        'output',
+        help='path to output file with xyz file extention' 
+    )
+
+def set_up_merge_xyz_parser(merge_xyz_parser):
+    """Setups merge_xyz parser"""
+
+    # TODO: Fix messages
+    merge_xyz_parser.add_argument(
+        'step',
+        help='steps'
+    )
+
+    merge_xyz_parser.add_argument(
+        'inputs',
+        help='list of files'
+    )
+
+    merge_xyz_parser.add_argument(
+        'output',
+        help='path to output file with xyz file extention' 
+    )
+
+def set_up_traning_parser(training_parser):
+    """Setups training parser"""
+
+    training_parser.add_argument(
+        '--verbose',
+        '-v', 
+        action='store_true', 
+        default=False,
+        help='this flag may increase processing time.'
+        )
+
+    training_parser.add_argument(
+        '--resume', 
+        '-r', 
+        type=Path,
+        help='resume training from given config directory.\n'
+             'the given directory must contain '
+             '`trainer_snapshot.npz`, `interim_result.pickle`.')
+
+def set_up_prediction_and_phonon_parser(prediction_parser, phonon_parser):
+    """Setups param prediction and phonon parser"""
+
+    for parser in [prediction_parser, phonon_parser]:
+        parser.add_argument(
+            '--poscar', 
+            '-p', 
+            required=True, 
+            type=Path,
+            help='POSCAR file used for postprocess calculation.'
+            )
+        parser.add_argument(
+            '--masters', 
+            '-m', 
+            required=True, 
+            type=Path,
+            help='trained masters model used for postprocess calculation.'
+            )
