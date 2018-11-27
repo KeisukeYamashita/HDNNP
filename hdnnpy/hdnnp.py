@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""
+    hdnnpy
+
+    :copyright: © 2018 by KeisukeYamashita.
+    :license: MIT, see LICENSE for more details.
+"""
+
 from . import settings as stg
 
 import shutil

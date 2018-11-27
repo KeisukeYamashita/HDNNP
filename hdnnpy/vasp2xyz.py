@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""
+    hdnnpy.vasp2xyz
+
+    :copyright: © 2018 by KeisukeYamashita.
+    :license: MIT, see LICENSE for more details.
+"""
+
 import ase.io
 from pyplelogger.pyplelogger import Logger
 log = Logger(__name__).build()

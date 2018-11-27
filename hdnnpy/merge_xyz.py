@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""
+    hdnnpy.merge_xyz
+
+    :copyright: © 2018 by KeisukeYamashita.
+    :license: MIT, see LICENSE for more details.
+"""
+
 from pathlib import Path
 import ase.io
 from pyplelogger.pyplelogger import Logger
