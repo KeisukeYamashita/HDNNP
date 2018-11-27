@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+hdnnpy = {editable = true, path = "."}
+numpy = "*"
+matplotlib = "*"
+pyyaml = "*"
+scikit-learn = "*"
+scikit-optimize = "*"
+"mpi4py" = "*"
+ase = "*"
+phonopy = "*"
+chainer = "*"
+
+[dev-packages]
+jupyter = "*"
+
+[requires]
+python_version = "3.6.7"
