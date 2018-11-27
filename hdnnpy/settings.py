@@ -16,7 +16,7 @@ import chainermn
 import hdnnpy.argparser as argparser
 
 
-class defaults:
+class Settings:
     class file:
         out_dir = 'output'
     class mpi:
