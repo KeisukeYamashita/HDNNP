@@ -1,5 +1,10 @@
 # High Dimensional Neural Network Potential(HDNNP)
 
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Python 3.3](https://img.shields.io/badge/python->3.3-blue.svg)](https://www.python.org/downloads/release/python-330/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+
 > This is a implementation of High Dimensional Neural Network Potential(HDNNP) designed to reproduce Density Function Theory(DFT) calculation *effectively* with high *flexibility*, *reactivity*. Based on ogura-edu/HDNNP.
 
 ## Install
@@ -112,7 +117,7 @@ And these is a bug that if you install anaconda by `pyenv`, `pipenv` will fail t
 
 ## Maintainer
 
-- KeisukeYamashita
+- KeisukeYamashita: maintainer and creator
 
 ## Reference
 
