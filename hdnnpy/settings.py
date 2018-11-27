@@ -13,7 +13,7 @@ import sys
 from mpi4py import MPI
 import chainermn
 
-from .argparser import get_parser
+import hdnnpy.argparser as argparser
 
 
 class defaults:
@@ -39,7 +39,6 @@ class defaults:
     class skopt:
         pass
 
-
 def import_user_settings(args):
     if args.mode == 'training' and args.resume:
         search_path = str(args.resume.parent.absolute())
@@ -64,7 +63,7 @@ def import_phonopy_settings():
     return phonopy_configs
 
 
-args = get_parser()
+args = argparser.parse()
 stg = import_user_settings(args)
 
 if args.mode == 'phonon':

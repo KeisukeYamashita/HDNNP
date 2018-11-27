@@ -115,3 +115,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Input Data
+/data/*.xyz
+
+# Manual Config files
+/configs.py
