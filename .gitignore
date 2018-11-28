@@ -117,7 +117,13 @@ dmypy.json
 .pyre/
 
 # Input Data
-/data/*.xyz
+/data/
 
 # Manual Config files
 /configs.py
+
+# Output(= Result of scripts)
+/output/
+
+# Editor configs
+.vscode/

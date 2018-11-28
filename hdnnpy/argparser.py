@@ -20,7 +20,7 @@ def parse():
 
     vasp2xyz_parser = subparsers.add_parser('vasp2xyz', help='converts vasp OUTCAR into a xyz file extention')
     merge_xyz_parser = subparsers.add_parser('merge-xyz', help='merges multi xyz format files')
-    training_parser = subparsers.add_parser('training', help='train the network')
+    train_parser = subparsers.add_parser('train', help='train the network')
     prediction_parser = subparsers.add_parser('prediction', help='make prediction from trained network')
     ps_parser = subparsers.add_parser('param-search', help='see `param-search -h`')
     sf_parser = subparsers.add_parser('sym-func', help='see `sym-func -h`')
@@ -28,7 +28,7 @@ def parse():
 
     set_up_vasp2xyz_parser(vasp2xyz_parser)
     set_up_merge_xyz_parser(merge_xyz_parser)
-    set_up_traning_parser(training_parser)
+    set_up_traning_parser(train_parser)
     set_up_prediction_and_phonon_parser(prediction_parser, phonon_parser)
 
     return parser.parse_args()
@@ -54,40 +54,40 @@ def set_up_vasp2xyz_parser(vasp2xyz_parser):
 def set_up_merge_xyz_parser(merge_xyz_parser):
     """Setups merge_xyz parser"""
 
-    # TODO: Fix messages
     merge_xyz_parser.add_argument(
         'step',
-        help='steps'
+        type=int,
+        help='the interval of data for extraction'
     )
 
     merge_xyz_parser.add_argument(
         'inputs',
-        help='list of files'
+        type=Path,
+        help='directory of xyz files'
     )
 
     merge_xyz_parser.add_argument(
         'output',
-        help='path to output file with xyz file extention' 
+        help='output merged xyz file' 
     )
 
-def set_up_traning_parser(training_parser):
-    """Setups training parser"""
+def set_up_traning_parser(train_parser):
+    """Setups train parser"""
 
-    training_parser.add_argument(
+    train_parser.add_argument(
         '--verbose',
         '-v', 
         action='store_true', 
         default=False,
-        help='this flag may increase processing time.'
-        )
+        help='this flag may increase processing time')
 
-    training_parser.add_argument(
+    train_parser.add_argument(
         '--resume', 
         '-r', 
         type=Path,
-        help='resume training from given config directory.\n'
+        help='resume train from given config directory.\n'
              'the given directory must contain '
-             '`trainer_snapshot.npz`, `interim_result.pickle`.')
+             '`trainer_snapshot.npz`, `interim_result.pickle`')
 
 def set_up_prediction_and_phonon_parser(prediction_parser, phonon_parser):
     """Setups param prediction and phonon parser"""
@@ -98,12 +98,12 @@ def set_up_prediction_and_phonon_parser(prediction_parser, phonon_parser):
             '-p', 
             required=True, 
             type=Path,
-            help='POSCAR file used for postprocess calculation.'
+            help='POSCAR file used for postprocess calculation'
             )
         parser.add_argument(
             '--masters', 
             '-m', 
             required=True, 
             type=Path,
-            help='trained masters model used for postprocess calculation.'
+            help='trained masters model used for postprocess calculation'
             )

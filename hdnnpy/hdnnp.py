@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""
+    hdnnpy
+
+    :copyright: © 2018 by KeisukeYamashita.
+    :license: MIT, see LICENSE for more details.
+"""
+
 from . import settings as stg
 
 import shutil
@@ -29,6 +36,9 @@ from .util import assert_settings
 from .chainer_extensions import Evaluator
 from .chainer_extensions import set_log_scale
 from .chainer_extensions import scatter_plot
+from pyplelogger.pyplelogger import Logger
+log = Logger(__name__).build()
+
 
 def main():
     args = argparser.parse()
@@ -37,13 +47,13 @@ def main():
         vasp2xyz.convert(args)
     elif args.mode == 'merge-xyz':
         merge_xyz.merge(args)
-    
-    # TODO: Fix duplicated setting import
     else: 
         assert_settings(stg)
         mkdir(stg.file.out_dir)
+        
+        if stg.args.mode == 'train':
+            log.info("🏋️‍  Started training...")
 
-        if stg.args.mode == 'training':
             try:
                 generator = DataGenerator(stg.dataset.xyz_file, 'xyz')
                 dataset, elements = generator.holdout(ratio=stg.dataset.ratio)
@@ -53,9 +63,13 @@ def main():
                     dump_lammps(stg.file.out_dir/'lammps.nnp', generator.preproc, masters)
                     dump_training_result(stg.file.out_dir/'result.yaml', result)
             finally:
-                shutil.copy('settings.py', stg.file.out_dir/'settings.py')
+                shutil.copy('configs.py', stg.file.out_dir/'configs.py')
+
+            log.info("🏋️‍  Finished traning successfully")
 
         elif stg.args.mode == 'param_search':
+            log.info("🔬 Started param searching...")
+
             try:
                 seed = np.random.get_state()[1][0]
                 seed = stg.mpi.comm.bcast(seed, root=0)
@@ -71,15 +85,21 @@ def main():
                     dump_settings(stg.file.out_dir/'best_settings.py')
             finally:
                 shutil.copy('settings.py', stg.file.out_dir/'settings.py')
+            
+            log.info("🔬 Finished param searching successfully")
 
         elif stg.args.mode == 'sym_func':
             stg.dataset.preproc = None
             DataGenerator(stg.dataset.xyz_file, 'xyz')
 
         elif stg.args.mode == 'prediction':
+            log.info("🔮 Started prediction...")
+
             _, energy, forces = predict()
             pprint('energy:\n{}'.format(energy.data))
             pprint('forces:\n{}'.format(forces.data))
+
+            log.info("🔮 Finished prediction successfully")
 
         elif stg.args.mode == 'phonon':
             dataset, _, forces = predict()

@@ -17,6 +17,8 @@ from phonopy.structure.atoms import PhonopyAtoms
 from . import settings as stg
 from .preproc import PREPROC
 from .util import pprint, mkdir
+from pyplelogger.pyplelogger import Logger
+log = Logger(__name__).build()
 
 
 RANDOMSTATE = np.random.get_state()  # use the same random state to shuffle datesets on a execution
@@ -199,13 +201,14 @@ class AtomicStructureDataset(object):
             ndarray = np.load(EF_file)
             assert ndarray['nsample'] == self._nsample, \
                 '# of samples of {} and given data file do not match.'.format(EF_file)
-            pprint('{} is found.'.format(EF_file))
+            log.info('{} exists'.format(EF_file))
             Es = ndarray['E']
             Fs = ndarray['F']
 
         except (ValueError, FileNotFoundError) as e:
             if isinstance(e, FileNotFoundError):
-                pprint('{} is not found.'.format(EF_file))
+                log.info('{} does not exists'.format(EF_file))
+
             pprint('calculate energy and forces from scratch.')
 
             if stg.mpi.rank == 0:
@@ -236,21 +239,25 @@ class AtomicStructureDataset(object):
             but discard the calculated data once.
         preprocessed datasets will be scattered to all processes later.
         """
+
         SF_file = data_dir/'Symmetry_Function.npz'
+        
         try:
             if not save:
                 raise ValueError
             ndarray = np.load(SF_file)
             assert ndarray['nsample'] == self._nsample, \
                 '# of samples of {} and given data file do not match.'.format(SF_file)
-            pprint('{} is found.'.format(SF_file))
+            log.info('{} exists'.format(SF_file))
             existing_keys = set([Path(key).parent for key in ndarray.keys() if key.endswith('G')])
         except (ValueError, FileNotFoundError) as e:
             if isinstance(e, FileNotFoundError):
-                pprint('{} is not found.'.format(SF_file))
+                log.info('{} does not exists'.format(SF_file))
             pprint('calculate symmetry functions from scratch.')
             existing_keys = None
+        
         new_keys, re_used_keys, no_used_keys = self._check_uncalculated_keys(existing_keys)
+        
         if new_keys and save:
             pprint('uncalculated symmetry function parameters are as follows:')
             pprint('\n'.join(map(str, new_keys)))
@@ -430,8 +437,10 @@ class DataGenerator(object):
 
     def _construct_training_datasets(self, original_xyz, format):
         cfg_pickle = original_xyz.with_name('config_type.pickle')
+
         if not cfg_pickle.exists():
             parse_xyzfile(original_xyz)
+        
         config_type = pickle.loads(cfg_pickle.read_bytes())
         required_config = sorted(config_type) if 'all' in stg.dataset.config else stg.dataset.config
 
@@ -439,15 +448,18 @@ class DataGenerator(object):
             self._preproc = PREPROC[stg.dataset.preproc](stg.dataset.nfeature)
         else:
             self._preproc = PREPROC[None]()
-        if stg.args.mode == 'training' and stg.args.resume:
+        
+        if stg.args.mode == 'train' and stg.args.resume:
             self._preproc.load(stg.file.out_dir/'preproc.npz')
 
         self._datasets = []
         elements = set()
+        
         for config in required_config:
             if config not in config_type:
                 continue
-            pprint('Construct dataset of configuration type: {}'.format(config))
+
+            log.info('Construting dataset of configuration type: {}...'.format(config))
 
             parsed_xyz = original_xyz.with_name(config)/'structure.xyz'
             dataset = AtomicStructureDataset(parsed_xyz, format)
@@ -457,7 +469,8 @@ class DataGenerator(object):
             dataset = scatter_dataset(dataset)
             self._datasets.append(dataset)
             elements.update(dataset.composition['element'])
-            pprint('')
+
+            log.info('Construted dataset successfully')
 
         self._preproc.save(stg.file.out_dir/'preproc.npz')
         self._elements = sorted(elements)
@@ -473,7 +486,8 @@ class DataGenerator(object):
 
 def parse_xyzfile(xyz_file):
     if stg.mpi.rank == 0:
-        pprint('config_type.pickle is not found.\nparsing {} ... '.format(xyz_file), end='')
+        log.info('config_type.pickle is not found. Parsing xyz file {} ... '.format(xyz_file))
+
         config_type = set()
         dataset = defaultdict(list)
         for atoms in ase.io.iread(str(xyz_file), index=':', format='xyz', parallel=False):
@@ -493,7 +507,8 @@ def parse_xyzfile(xyz_file):
             mkdir(cfg_dir)
             ase.io.write(str(cfg_dir/'structure.xyz'), dataset[config], format='xyz', parallel=False)
             (cfg_dir/'composition.pickle').write_bytes(pickle.dumps(dict(composition)))
-        pprint('done')
+        
+        log.info("Finished parsing xyz file")
 
     stg.mpi.comm.Barrier()
 

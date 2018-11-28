@@ -1,13 +1,26 @@
 # -*- coding: utf-8 -*-
 
+"""
+    hdnnpy.merge_xyz
+
+    :copyright: © 2018 by KeisukeYamashita.
+    :license: MIT, see LICENSE for more details.
+"""
+
 from pathlib import Path
 import ase.io
+from pyplelogger.pyplelogger import Logger
+log = Logger(__name__).build()
  
 def merge(args):
-    step = int(args.step)
+    step = args.step
     inputs = args.inputs
     output = args.output
 
-    for f in Path(inputs).glob('*.xyz'):
-        images = ase.io.read(f, index='::{}'.format(step), format='xyz')
+    log.info("🦑 Started merging xfz files...")
+    
+    for file in inputs.glob('*.xyz'):
+        images = ase.io.read(file, index='::{}'.format(step), format='xyz')
         ase.io.write(output, images, format='xyz', append=True)
+
+    log.info("🦑 Merged files to {}".format(output))

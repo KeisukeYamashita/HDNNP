@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-This script defines the default settings for this program.
-Some settings must be set, and all settings can be overwritten
-by 'settings.py' on your working directory.
-Please see 'examples/config/config.py' as a example.
+    hdnnpy.settings
+
+    :copyright: © 2018 by KeisukeYamashita.
+    :license: MIT, see LICENSE for more details.
 """
 
 from pathlib import Path
@@ -14,9 +14,11 @@ from mpi4py import MPI
 import chainermn
 
 import hdnnpy.argparser as argparser
+from pyplelogger.pyplelogger import Logger
+log = Logger(__name__).build()
 
 
-class defaults:
+class Settings:
     class file:
         out_dir = 'output'
     class mpi:
@@ -39,35 +41,42 @@ class defaults:
     class skopt:
         pass
 
-def import_user_settings(args):
-    if args.mode == 'training' and args.resume:
+def load_user_settings(args):
+    log.info("Loading user settings...")
+
+    if args.mode == 'train' and args.resume:
         search_path = str(args.resume.parent.absolute())
     elif args.mode in ['prediction', 'phonon']:
         search_path = str(args.masters.parent.absolute())
     else:
         search_path = os.getcwd()
+    
     if not Path(search_path, 'configs.py').exists():
         raise FileNotFoundError('`configs.py` is not found in {}'.format(search_path))
+    
     sys.path.insert(0, search_path)
     from configs import stg
 
     # convert path string to pathlib.Path object
     stg.file.out_dir = Path(stg.file.out_dir)
     stg.dataset.xyz_file = Path(stg.dataset.xyz_file)
+
+    log.info("Successfully loaded user settings")
+
     return stg
 
 
-def import_phonopy_settings():
+def load_phonopy_settings():
     sys.path.insert(0, os.getcwd())
     import phonopy_configs
     return phonopy_configs
 
 
 args = argparser.parse()
-stg = import_user_settings(args)
+stg = load_user_settings(args)
 
 if args.mode == 'phonon':
-    phonopy = import_phonopy_settings()
+    phonopy = load_phonopy_settings()
 
 if not args.debug and stg.mpi.rank != 0:
     sys.stdout = Path(os.devnull).open('w')
