@@ -47,15 +47,13 @@ def main():
         vasp2xyz.convert(args)
     elif args.mode == 'merge-xyz':
         merge_xyz.merge(args)
-    
-    # TODO: Fix duplicated setting import
     else: 
         assert_settings(stg)
         mkdir(stg.file.out_dir)
-
-        log.info("Started training...")
         
         if stg.args.mode == 'train':
+            log.info("🏋️‍  Started training...")
+
             try:
                 generator = DataGenerator(stg.dataset.xyz_file, 'xyz')
                 dataset, elements = generator.holdout(ratio=stg.dataset.ratio)
@@ -67,7 +65,11 @@ def main():
             finally:
                 shutil.copy('configs.py', stg.file.out_dir/'configs.py')
 
+            log.info("🏋️‍  Finished traning successfully")
+
         elif stg.args.mode == 'param_search':
+            log.info("🔬 Started param searching...")
+
             try:
                 seed = np.random.get_state()[1][0]
                 seed = stg.mpi.comm.bcast(seed, root=0)
@@ -83,15 +85,21 @@ def main():
                     dump_settings(stg.file.out_dir/'best_settings.py')
             finally:
                 shutil.copy('settings.py', stg.file.out_dir/'settings.py')
+            
+            log.info("🔬 Finished param searching successfully")
 
         elif stg.args.mode == 'sym_func':
             stg.dataset.preproc = None
             DataGenerator(stg.dataset.xyz_file, 'xyz')
 
         elif stg.args.mode == 'prediction':
+            log.info("🔮 Started prediction...")
+
             _, energy, forces = predict()
             pprint('energy:\n{}'.format(energy.data))
             pprint('forces:\n{}'.format(forces.data))
+
+            log.info("🔮 Finished prediction successfully")
 
         elif stg.args.mode == 'phonon':
             dataset, _, forces = predict()

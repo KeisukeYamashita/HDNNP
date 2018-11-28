@@ -124,3 +124,6 @@ dmypy.json
 
 # Output(= Result of scripts)
 /output/
+
+# Editor configs
+.vscode/
