@@ -6,7 +6,6 @@
     :copyright: © 2018 by KeisukeYamashita.
     :license: MIT, see LICENSE for more details.
 """
-
 from . import settings as stg
 
 import shutil
@@ -39,7 +38,6 @@ from .chainer_extensions import scatter_plot
 from pyplelogger.pyplelogger import Logger
 log = Logger(__name__).build()
 
-
 def main():
     args = argparser.parse()
 
@@ -52,7 +50,7 @@ def main():
         mkdir(stg.file.out_dir)
         
         if stg.args.mode == 'train':
-            log.info("🏋️‍  Started training...")
+            log.info("Started training...")
 
             try:
                 generator = DataGenerator(stg.dataset.xyz_file, 'xyz')
@@ -65,10 +63,10 @@ def main():
             finally:
                 shutil.copy('configs.py', stg.file.out_dir/'configs.py')
 
-            log.info("🏋️‍  Finished traning successfully")
+            log.info("Finished traning successfully")
 
         elif stg.args.mode == 'param_search':
-            log.info("🔬 Started param searching...")
+            log.info("Started param searching...")
 
             try:
                 seed = np.random.get_state()[1][0]
@@ -86,20 +84,20 @@ def main():
             finally:
                 shutil.copy('settings.py', stg.file.out_dir/'settings.py')
             
-            log.info("🔬 Finished param searching successfully")
+            log.info("Finished param searching successfully")
 
         elif stg.args.mode == 'sym_func':
             stg.dataset.preproc = None
             DataGenerator(stg.dataset.xyz_file, 'xyz')
 
         elif stg.args.mode == 'prediction':
-            log.info("🔮 Started prediction...")
+            log.info("Started prediction...")
 
             _, energy, forces = predict()
-            pprint('energy:\n{}'.format(energy.data))
-            pprint('forces:\n{}'.format(forces.data))
+            log.info('energy: {}'.format(energy.data))
+            log.info('forces:\n{}'.format(forces.data))
 
-            log.info("🔮 Finished prediction successfully")
+            log.info("Finished prediction successfully")
 
         elif stg.args.mode == 'phonon':
             dataset, _, forces = predict()
@@ -107,11 +105,11 @@ def main():
             phonopy.set_forces(forces.data)
             phonopy.produce_force_constants()
 
-            pprint('drawing phonon band structure ... ', end='')
+            log.info('Drawing phonon band structure ... ')
             phonopy_plt = stg.phonopy.callback(phonopy)
             phonopy_plt.savefig(stg.args.masters.with_name('phonon_band.png'))
             phonopy_plt.close()
-            pprint('done')
+            log.info('Finish drawing band structure')
 
             shutil.copy('phonopy_settings.py', stg.file.out_dir/'phonopy_settings.py')
 

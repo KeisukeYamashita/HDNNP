@@ -4,7 +4,8 @@ import numpy as np
 from sklearn import decomposition
 
 from .util import pprint
-
+from pyplelogger.pyplelogger import Logger
+log = Logger(__name__).build()
 
 class PreprocBase(object):
     def __init__(self, *args, **kwargs):
@@ -51,7 +52,7 @@ class PCA(PreprocBase):
     def decompose(self, dataset):
         for element in dataset.composition['element']:
             if element in self._elements:
-                pprint('Use already calculated PCA parameters for: {}'.format(element))
+                log.info('Use already calculated PCA parameters for: {}'.format(element))
                 continue
 
             nfeature = dataset.input.shape[-1]
@@ -61,8 +62,8 @@ class PCA(PreprocBase):
             self._mean[element] = pca.mean_.astype(np.float32)
             self._components[element] = pca.components_.T.astype(np.float32)
             self._elements.append(element)
-            pprint('Initialize PCA parameters for: {}\n'
-                   '\tdecompose symmetry functions: {} => {}\n\tcumulative contribution rate = {}'
+            log.info('Initialize PCA parameters for: {}'
+                   '\tdecompose symmetry functions: {} => {}, cumulative contribution rate = {}'
                    .format(element, nfeature, self.n_components, np.sum(pca.explained_variance_ratio_)))
 
         mean = np.array([self._mean[element]  # (atom, feature)

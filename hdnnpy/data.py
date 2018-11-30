@@ -209,7 +209,7 @@ class AtomicStructureDataset(object):
             if isinstance(e, FileNotFoundError):
                 log.info('{} does not exists'.format(EF_file))
 
-            pprint('calculate energy and forces from scratch.')
+            log.info('Calculate energy and forces from scratch.')
 
             if stg.mpi.rank == 0:
                 Es = np.empty((self._nsample, 1))
@@ -253,13 +253,13 @@ class AtomicStructureDataset(object):
         except (ValueError, FileNotFoundError) as e:
             if isinstance(e, FileNotFoundError):
                 log.info('{} does not exists'.format(SF_file))
-            pprint('calculate symmetry functions from scratch.')
+            log.info('calculate symmetry functions from scratch.')
             existing_keys = None
         
         new_keys, re_used_keys, no_used_keys = self._check_uncalculated_keys(existing_keys)
         
         if new_keys and save:
-            pprint('uncalculated symmetry function parameters are as follows:')
+            log.info('uncalculated symmetry function parameters are as follows:')
             pprint('\n'.join(map(str, new_keys)))
 
         if stg.mpi.rank == 0:

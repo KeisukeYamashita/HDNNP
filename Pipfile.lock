@@ -286,10 +286,10 @@
         },
         "pyplelogger": {
             "hashes": [
-                "sha256:45a8502d075c9d6a94c8f1fc0738687e981f78aaf4541b51a70de32c34db8480"
+                "sha256:c8592fec85b83be09357338087d552fbc689b7107a14e75cf806da66a6fd5a06"
             ],
             "index": "pypi",
-            "version": "==0.1.4"
+            "version": "==0.1.5"
         },
         "python-dateutil": {
             "hashes": [

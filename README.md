@@ -52,6 +52,7 @@ $ pip install pipenv
 ```
 
 ## Setup
+
 ### By Pipenv(Prefered)
 
 Same as by anaconda, but you need to install python rather than installing anaconda. 
@@ -132,6 +133,7 @@ on the Anaconda Cloud, so you still have to install these packages by `pip`.
 And these is a bug that if you install anaconda by `pyenv`, `pipenv` will fail to start(ref: [pythonfinder + pyenv + anaconda issue](https://github.com/pypa/pipenv/issues/3044)).
 
 ## Usage
+
 ### vasp2xyz: Convert VASP OUTCAR to xyz file
 
 Use `vasp2xyz` command to convert OUTCAR to xyz file.
