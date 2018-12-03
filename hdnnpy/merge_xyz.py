@@ -17,10 +17,10 @@ def merge(args):
     inputs = args.inputs
     output = args.output
 
-    log.info("🦑 Started merging xfz files...")
+    log.info("Started merging xfz files...")
     
     for file in inputs.glob('*.xyz'):
         images = ase.io.read(file, index='::{}'.format(step), format='xyz')
         ase.io.write(output, images, format='xyz', append=True)
 
-    log.info("🦑 Merged files to {}".format(output))
+    log.info("Merged files to {}".format(output))
