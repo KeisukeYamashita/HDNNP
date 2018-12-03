@@ -1,2 +1,2 @@
 from pyplelogger.pyplelogger import Logger
-Logger.set_default_format('%(levelname)s %(asctime)s %(message)s')
+Logger.set_default_format('%(asctime)s %(levelname)s %(message)s')
