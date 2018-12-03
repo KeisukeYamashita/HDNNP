@@ -27,10 +27,10 @@
         },
         "chainer": {
             "hashes": [
-                "sha256:74c11c3f20c33f85d3f42cc237a55efc384dc6f42035d6d2448318b182f236ee"
+                "sha256:8349e6b6b0bb5380e00615e6c16b247c3063d346b257560abd5fb83038aeb9bd"
             ],
             "index": "pypi",
-            "version": "==5.0.0"
+            "version": "==5.1.0"
         },
         "click": {
             "hashes": [
@@ -286,10 +286,10 @@
         },
         "pyplelogger": {
             "hashes": [
-                "sha256:c8592fec85b83be09357338087d552fbc689b7107a14e75cf806da66a6fd5a06"
+                "sha256:6bdc16e314ed63c0e6ab6b1d010491cd82d04aa40db0033e8cc794b47ba68eee"
             ],
             "index": "pypi",
-            "version": "==0.1.5"
+            "version": "==0.1.8"
         },
         "python-dateutil": {
             "hashes": [
@@ -458,11 +458,11 @@
         },
         "ipython": {
             "hashes": [
-                "sha256:a5781d6934a3341a1f9acb4ea5acdc7ea0a0855e689dbe755d070ca51e995435",
-                "sha256:b10a7ddd03657c761fc503495bc36471c8158e3fc948573fb9fe82a7029d8efd"
+                "sha256:6a9496209b76463f1dec126ab928919aaf1f55b38beb9219af3fe202f6bbdd12",
+                "sha256:f69932b1e806b38a7818d9a1e918e5821b685715040b48e59c657b3c7961b742"
             ],
             "markers": "python_version >= '3.3'",
-            "version": "==7.1.1"
+            "version": "==7.2.0"
         },
         "ipython-genutils": {
             "hashes": [
